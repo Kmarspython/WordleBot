@@ -1,8 +1,10 @@
-WordleBot.py
+## About the Project
 
 This is a Python program that will attempt to complete the Wordle of the day when run. It uses Edge as the browser,
 so you must have that browser available. It uses Selenium and Webdriver Manager to interact with Edge, so those
 must be downloaded as well.
+
+## How it Works
 
 The program works by putting together random letters until it comes up with a word the the game will accept.
 Once it does, it will move on to the next guess and it will also put the word that it guessed into a file
