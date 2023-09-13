@@ -13,7 +13,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 # This will work with WebDriverWait to find the elements
 from selenium.webdriver.support import expected_conditions as EC
 
-#This is the actionchain that will allow button presses
+# This is the actionchain that will allow button presses
 from selenium.webdriver.common.action_chains import ActionChains
 
 # This is the webdriver for Microsoft Edge
@@ -89,10 +89,10 @@ class WordleBot:
         self.word = ""
         self.absent = []
         self.present = [[], [], [], [], []]
-        self.presentAll = []
+        self.present_all = []
         self.correct = [None, None, None, None, None]
-        self.learnedWords = []
-        self.wordleWords = []
+        self.learned_words = []
+        self.wordle_words = []
 
     def get_url(self, url):
         """Gets the URL"""
@@ -108,6 +108,7 @@ class WordleBot:
 
     def random_word(self):
         """Chooses a random word"""
+
         word = ""
         for i in range(5):
             letter = self.letter_dic[random.randint(1, 26)]
@@ -118,9 +119,11 @@ class WordleBot:
         return word
 
     def legal_word(self):
+        """Finds a legal word"""
+
         word = self.correct[:]
         guess = ""
-        for letter in self.presentAll:
+        for letter in self.present_all:
             position = random.randint(0, 4)
             while letter in self.present[position] or word[position] != None:
                 position = random.randint(0, 4)
@@ -128,21 +131,20 @@ class WordleBot:
 
         for i in range(5):
             if word[i] == None:
-                rand_letter = self.letter_dic[random.randint(1,26)]
+                rand_letter = self.letter_dic[random.randint(1, 26)]
                 while rand_letter in self.absent:
-                    rand_letter = self.letter_dic[random.randint(1,26)]
+                    rand_letter = self.letter_dic[random.randint(1, 26)]
                 word[i] = rand_letter
         for i in word:
             guess += i
         return guess
 
-
-
-
     def test_word(self, row):
         """Tests if the word was accepted be Wordle"""
 
-        element = self.driver.find_element(By.XPATH, self.rows[row - 1] + "//div[1]//div[1]")
+        element = self.driver.find_element(
+            By.XPATH, self.rows[row - 1] + "//div[1]//div[1]"
+        )
         if element.get_attribute("data-animation") == "flip-in":
             return True
         elif element.get_attribute("data-animation") == "idle":
@@ -153,8 +155,8 @@ class WordleBot:
 
         run = False
         counter = 0
-        learnedWord = self.create_regex(row, "Words.txt")
-        if learnedWord == None:
+        learned_word = self.create_regex(row, "Words.txt")
+        if learned_word == None:
             while not run:
                 word = self.legal_word()
                 self.actions.send_keys(word)
@@ -164,40 +166,43 @@ class WordleBot:
                 run = self.test_word(row)
                 if not run:
                     self.multi_keys(5, Keys.BACK_SPACE)
-            self.wordleWords += [word]
+            self.wordle_words += [word]
             return word
         else:
-            self.actions.send_keys(learnedWord)
+            self.actions.send_keys(learned_word)
             self.actions.send_keys(Keys.RETURN)
             self.actions.perform()
             counter += 1
-            self.wordleWords += [learnedWord]
-            return learnedWord
-
+            self.wordle_words += [learned_word]
+            return learned_word
 
     def guess_setup(self, word, row):
         """Sets up the rules for the next guess"""
         for i in range(5):
-            element = self.driver.find_element(By.XPATH, self.rows[row - 1] + f"//div[{i + 1}]//div[1]")
+            element = self.driver.find_element(
+                By.XPATH, self.rows[row - 1] + f"//div[{i + 1}]//div[1]"
+            )
             status = element.get_attribute("data-state")
             if status == "absent" and word[i] not in self.absent:
                 self.absent += [word[i]]
             elif status == "present":
                 if word[i] not in self.present[i]:
                     self.present[i] += [word[i]]
-                if word[i] not in self.presentAll:
-                    self.presentAll += [word[i]]
+                if word[i] not in self.present_all:
+                    self.present_all += [word[i]]
             elif status == "correct":
                 if self.correct[i] == None:
                     self.correct[i] = word[i]
-                    if word[i] in self.presentAll:
-                        self.presentAll.remove(word[i])
+                    if word[i] in self.present_all:
+                        self.present_all.remove(word[i])
 
     def win_condition(self, row):
         """Determines if the wordle is complete"""
 
         for i in range(5):
-            element = self.driver.find_element(By.XPATH, self.rows[row - 1] + f"//div[{i + 1}]//div[1]")
+            element = self.driver.find_element(
+                By.XPATH, self.rows[row - 1] + f"//div[{i + 1}]//div[1]"
+            )
             status = element.get_attribute("data-state")
             if status != "correct":
                 return False
@@ -207,7 +212,7 @@ class WordleBot:
     def write_words(self, path, word):
         """Write words into a file"""
 
-        with open(path, 'a') as f:
+        with open(path, "a") as f:
             f.write(word + "\n")
 
     def write_wordles(self, path, result):
@@ -218,20 +223,18 @@ class WordleBot:
                 By.CLASS_NAME, "Toast-module_toast__iiVsN"
             ).text.lower()
         elif result == "Win":
-            finalWord = " " + self.wordleWords[-1]
+            finalWord = " " + self.wordle_words[-1]
 
-
-        with open(path, 'a') as f:
-            currentDate = date.today().strftime("%m-%d-%y")
-            f.write(currentDate + "\n")
-            f.write(result + ":" + " "  + finalWord + "\n")
-            for word in self.wordleWords:
+        with open(path, "a") as f:
+            current_date = date.today().strftime("%m-%d-%y")
+            f.write(current_date + "\n")
+            f.write(result + ":" + " " + finalWord + "\n")
+            for word in self.wordle_words:
                 f.write(word + "\n")
-            f.write("Number of guesses: " + str(len(self.wordleWords)) + "\n" * 2)
+            f.write("Number of guesses: " + str(len(self.wordle_words)) + "\n" * 2)
 
     def delete_wordles(self, path1, path2):
         """Deletes a Wordle entry from the Wordls.txt file if the current date Wordle is in the file"""
-
 
         with open(path1, "r+") as f:
             d = f.readlines()
@@ -248,15 +251,14 @@ class WordleBot:
                 f.write(i)
             f.truncate()
 
-
     def wordle_date(self, path):
         """Determines if today's Wordle has been played yet"""
 
-        currentDate = date.today().strftime("%m-%d-%y")
+        current_date = date.today().strftime("%m-%d-%y")
 
         with open(path, "r") as f:
             d = f.readlines()
-            if currentDate + "\n" in d:
+            if current_date + "\n" in d:
                 return True
             else:
                 return False
@@ -279,8 +281,6 @@ class WordleBot:
         else:
             return True
 
-
-
     def create_regex(self, row, path):
         """Creates the regular expression to be used to find words in the learned words"""
 
@@ -293,50 +293,51 @@ class WordleBot:
                             regex[x] = regex[x][:-1] + "^" + y + "]"
                         else:
                             regex[x] = regex[x][:-1] + y + "]"
-            regexStr = ''.join(regex)
-            random.shuffle(self.learnedWords)
-            wordStr = ' '.join(self.learnedWords)
-            matches = re.findall(regexStr, wordStr)
-            Flag1 = False
-            Flag2 = False
+            regex_str = "".join(regex)
+            random.shuffle(self.learned_words)
+            word_str = " ".join(self.learned_words)
+            matches = re.findall(regex_str, word_str)
+            flag1 = False
+            flag2 = False
             for word in matches:
                 for i in range(5):
                     if self.correct[i] == None:
-                        if word[i] in self.absent and word not in self.presentAll:
-                            Flag1 = False
+                        if word[i] in self.absent and word not in self.present_all:
+                            flag1 = False
                             break
                 else:
-                    Flag1 = True
-                if Flag1 == True:
-                    if self.presentAll != []:
-                        for x in self.presentAll:
+                    flag1 = True
+                if flag1 == True:
+                    if self.present_all != []:
+                        for x in self.present_all:
                             if x not in word:
-                                Flag2 = False
-                                Flag1 = False
+                                flag2 = False
+                                flag1 = False
                                 break
                         else:
-                            Flag2 = True
+                            flag2 = True
                     else:
-                        Flag2 = True
-                if Flag1 == True and Flag2 == True:
+                        flag2 = True
+                if flag1 == True and flag2 == True:
                     return word
             return None
-
 
     def try_words(self, path):
         """Attempts to try a word form the file Words.txt if it fits within the rules"""
 
-        if self.learnedWords == []:
-            with open(path, 'r') as f:
+        if self.learned_words == []:
+            with open(path, "r") as f:
                 for line in f:
-                    self.learnedWords += [line.strip()]
+                    self.learned_words += [line.strip()]
 
     def mode(self):
         """Determines if the bot will play the Wordle or go into history mode"""
 
         print("Enter 'x' at any time to quit.")
         while True:
-            x = input("Would you like to play the Wordle or look at history? (play/history)")
+            x = input(
+                "Would you like to play the Wordle or look at history? (play/history)"
+            )
             if x == "play":
                 return True
             elif x == "history":
@@ -354,25 +355,29 @@ class WordleBot:
             if x == "edge":
                 try:
                     self.driver = webdriver.Edge(
-                service=EdgeService(EdgeChromiumDriverManager().install()))
+                        service=EdgeService(EdgeChromiumDriverManager().install())
+                    )
                     break
                 except:
                     print("Microsoft Edge driver did not work")
             elif x == "chrome":
                 try:
-                    self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+                    self.driver = webdriver.Chrome(
+                        service=ChromeService(ChromeDriverManager().install())
+                    )
                     break
                 except:
                     print("Chrome driver did not work")
             elif x == "firefox":
                 try:
-                    self.driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()))
+                    self.driver = webdriver.Firefox(
+                        service=FirefoxService(GeckoDriverManager().install())
+                    )
                     break
                 except:
                     print("Firefox driver did not work")
             elif x == "x":
                 sys.exit()
-
 
     def history(self, path):
         """Enter a date to see the result of that day's Wordle"""
@@ -385,7 +390,7 @@ class WordleBot:
                 try:
                     with open(path, "r") as f:
                         d = f.readlines()
-                        for i in d[d.index(x + "\n"):]:
+                        for i in d[d.index(x + "\n") :]:
                             result += i
                             if i == "\n":
                                 print(result)
@@ -394,8 +399,6 @@ class WordleBot:
                     print("No Wordle record for that date.")
             elif x == "x":
                 sys.exit()
-
-
 
     def play(self):
         """incorporates previous methods in order to play the whole wordle game"""
@@ -437,8 +440,6 @@ class WordleBot:
         )
         element.click()
 
-
-
     def run(self):
         """Run the wordle bot"""
 
@@ -456,8 +457,6 @@ class WordleBot:
         """Test method"""
 
         self.history("Wordles.txt")
-
-
 
 
 if __name__ == "__main__":
