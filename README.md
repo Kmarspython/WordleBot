@@ -22,14 +22,14 @@ the words that it has already guessed to maybe help it make certain letters more
 
 ### Installing
 
-*You can download the code from this repository and make sure you have the Wordles.txt file and Words.txt file, as 
+* You can download the code from this repository and make sure you have the Wordles.txt file and Words.txt file, as 
 the code uses them.
-*If you would like to have all of the learned words and World history that the bot has, leave the text files as is. If you
+* If you would like to have all of the learned words and World history that the bot has, leave the text files as is. If you
 would like to start from scratch, delete the contents of the text files.
 
 ### Executing program
 
-*When you run the program, it will ask you if you would like to play or look at history.
+* When you run the program, it will ask you if you would like to play or look at history.
 * If you would like the bot to play, type "play".
 * If you would like to look at history, type "history" and enter a date.
 * Once you type "play", if the bot has already played today, it will ask you if you would like to redo the Wordle.
