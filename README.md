@@ -17,7 +17,9 @@ the words that it has already guessed to maybe help it make certain letters more
 
 * Selenium
 * WebDriverManager
-* Windows 10 (should work in other OS's)
+* Windows 10
+	* Edge driver works in Windows 10 but chrome driver does not at the moment.
+	*I have gotten chrome driver to work in linux but not edge.
 * Google Chrome, Firefox, or Microsoft Edge
 
 ### Installing
