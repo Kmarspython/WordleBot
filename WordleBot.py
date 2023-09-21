@@ -155,7 +155,7 @@ class WordleBot:
 
         run = False
         counter = 0
-        learned_word = self.create_regex(row, "Words.txt")
+        learned_word = self.create_regex(row)
         if learned_word == None:
             while not run:
                 word = self.legal_word()
@@ -281,7 +281,7 @@ class WordleBot:
         else:
             return True
 
-    def create_regex(self, row, path):
+    def create_regex(self, row):
         """Creates the regular expression to be used to find words in the learned words"""
 
         if row not in (1, 5, 6):
@@ -413,7 +413,7 @@ class WordleBot:
                 self.write_wordles("Wordles.txt", "Win")
                 break
             self.guess_setup(self.word, i)
-            self.create_regex(i, "Words.txt")
+            self.create_regex(i)
         else:
             time.sleep(2)
             self.write_wordles("Wordles.txt", "Loss")
