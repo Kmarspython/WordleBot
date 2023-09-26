@@ -44,3 +44,5 @@ would like to start from scratch, delete the contents of the text files.
 If you cannot get the program to work with any of the provided browsers, you can go here: https://pypi.org/project/webdriver-manager/
 to get support, or figure out how to try other browsers. If you would like more information on Selenium, please visit this site:
 https://selenium-python.readthedocs.io/index.html.
+
+![StartScreen1](pics/StartScreen1.png)

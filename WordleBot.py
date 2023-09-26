@@ -93,6 +93,7 @@ class WordleBot:
         self.correct = [None, None, None, None, None]
         self.learned_words = []
         self.wordle_words = []
+        self.start_wait = True
 
     def get_url(self, url):
         """Gets the URL"""
@@ -424,6 +425,9 @@ class WordleBot:
         self.choose_browser()
         self.actions = ActionChains(self.driver)
         self.get_url("https://www.nytimes.com/games/wordle/index.html")
+        if self.start_wait:
+            time.sleep(5)
+        time.sleep(3)
         try:
             element = self.driver.find_element(
                 By.XPATH, "//button[text() = 'Continue']"
