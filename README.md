@@ -43,7 +43,7 @@ would like to start from scratch, delete the contents of the text files.
 	* ![StartScreen2](pics/StartScreen2.jpg)
 * If the browser starts with a different screen (such as a cookie pop up), you can change the flag self.start_wait to true on line 96
 to give you time to click through.
-![WaitFlag](pics/WaitFlag.jpg)
+![WaitFlag](pics/WaitFlag.JPG)
 
 
 ## Help
