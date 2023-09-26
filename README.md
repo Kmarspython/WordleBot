@@ -45,4 +45,4 @@ If you cannot get the program to work with any of the provided browsers, you can
 to get support, or figure out how to try other browsers. If you would like more information on Selenium, please visit this site:
 https://selenium-python.readthedocs.io/index.html.
 
-![StartScreen1](pics/StartScreen1.png)
+![StartScreen1](pics/StartScreen1.jpg)
