@@ -93,7 +93,8 @@ class WordleBot:
         self.correct = [None, None, None, None, None]
         self.learned_words = []
         self.wordle_words = []
-        self.start_wait = True
+        self.start_wait = False
+
 
     def get_url(self, url):
         """Gets the URL"""
