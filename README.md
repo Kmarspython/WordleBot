@@ -38,11 +38,16 @@ would like to start from scratch, delete the contents of the text files.
 	* If you want to redo the Wordle, the program will delete the data from the day's Wordle and go again.
 	* If you do not, the Wordlebot will close with no changes.
 * If the bot has not done the Wordle of the day, the program will open the browser that you chose and start playing.
+* The WordleBot will start from either of the following two screens:
+	* ![StartScreen1](pics/StartScreen1.jpg)
+	* ![StartScreen2](pics/StartScreen2.jpg)
+* If the browser starts with a different screen (such as a cookie pop up), you can change the flag self.start_wait to true on line 96
+to give you time to click through.
+![ScreenFlag](pics/ScreenFlag.jpg)
+
 
 ## Help
 
 If you cannot get the program to work with any of the provided browsers, you can go here: https://pypi.org/project/webdriver-manager/
 to get support, or figure out how to try other browsers. If you would like more information on Selenium, please visit this site:
 https://selenium-python.readthedocs.io/index.html.
-
-![StartScreen1](pics/StartScreen1.jpg)
